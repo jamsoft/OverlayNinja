@@ -1,0 +1,103 @@
+﻿<Window x:Class="JamSoft.OverlayNinja.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:viewModels="clr-namespace:JamSoft.OverlayNinja.ViewModels"
+        xmlns:converters="clr-namespace:JamSoft.OverlayNinja.Converters"
+        mc:Ignorable="d"
+        Title="JamSoft Overlay Ninja"
+        Icon="ninja.ico"
+        Height="800" 
+        Width="1000">
+    <Window.Resources>
+        <converters:WillRenameBackgroundConverter x:Key="BackgroundConverter" />
+    </Window.Resources>
+    <Grid Margin="10">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <StackPanel>
+            <TextBlock Text="Reading Key" Style="{StaticResource TitleText}" />
+            <TextBlock Text="{Binding KeyName}"/>
+            <Border BorderBrush="Black" BorderThickness="1" />
+        </StackPanel>
+
+        <TextBlock Grid.Row="1" Text="Set Priority By Application" Style="{StaticResource TitleText}" />
+
+        <ListView Grid.Row="2" ItemsSource="{Binding AppGroups}" HorizontalContentAlignment="Stretch">
+            <ListView.ItemTemplate>
+                <DataTemplate DataType="viewModels:AppGroupViewModel">
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="1*" />
+                            <ColumnDefinition Width="2*" />
+                        </Grid.ColumnDefinitions>
+                        
+                        <StackPanel>
+                            <TextBlock Text="Application Name" />
+                            <TextBlock Text="{Binding AppName}" />
+                        </StackPanel>
+
+                        <ComboBox Grid.Column="1" ItemsSource="{Binding Priorities}" SelectedValue="{Binding SelectedPriority}" VerticalAlignment="Center" />
+                        
+                    </Grid>
+                </DataTemplate>
+            </ListView.ItemTemplate>
+        </ListView>
+
+        <Border Grid.Row="3" BorderBrush="Black" BorderThickness="1" />
+
+        <TextBlock Grid.Row="4" Text="Set Priority Individually" Style="{StaticResource TitleText}" />
+
+        <ListView Grid.Row="5" ItemsSource="{Binding Keys}" HorizontalContentAlignment="Stretch">
+            <ListView.ItemTemplate>
+                <DataTemplate DataType="viewModels:RegistryKeyEntryViewModel">
+                    <Grid Background="{Binding WillRename, Converter={StaticResource BackgroundConverter}, Mode=OneWay}">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="*" />
+                        </Grid.ColumnDefinitions>
+
+                        <StackPanel>
+                            <TextBlock Text="Key Name" />
+                            <TextBlock Text="{Binding Name}" />
+                        </StackPanel>
+
+                        <StackPanel Grid.Column="1">
+                            <TextBlock Text="New Name" />
+                            <TextBlock Text="{Binding NewNameUi}" />
+                        </StackPanel>
+
+                        <ComboBox Grid.Column="2" ItemsSource="{Binding Priorities}" SelectedValue="{Binding SelectedPriority}" VerticalAlignment="Center" />
+
+                    </Grid>
+                </DataTemplate>
+            </ListView.ItemTemplate>
+        </ListView>
+
+        <Border Grid.Row="6" BorderBrush="Black" BorderThickness="1" Margin="0,10,0,0" />
+
+        <Grid Grid.Row="7" Margin="0,10,0,0">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="300" />
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="300" />
+            </Grid.ColumnDefinitions>
+
+            <Button Grid.Column="0" Command="{Binding ReloadKeysCommand}" Content="Reload Keys" />
+            
+            <Button Grid.Column="2" Command="{Binding RenameKeysCommand}" Content="Rename Keys!! Eeek!!" Background="Crimson" />
+        </Grid>
+
+    </Grid>
+</Window>
