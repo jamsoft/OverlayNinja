@@ -18,6 +18,8 @@ I got so annoyed today that I wrote this little app to help, rather than constan
 
 You'll need to run this as admin and pick the right version for your OS architecture.  I've added in a requires administrator level access into the app.manifest so your machine should elevate.
 
+I've also added pre-compiled executables for people without access to the required build tools.
+
 # Problems
 
 As ever, submit issues or pull requests if you improve it.  I've tested this as far as it works great on my Windows 10 box but we are dealing with the registry so worth making a *.reg backup of the relevant keys before using.
