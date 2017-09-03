@@ -36,5 +36,19 @@
             string testName = null;
             Assert.Throws<NullReferenceException>(() => testName.FormatName(4, false));
         }
+
+        [Test]
+        public void Given_Name_LeadingSpaces_Throws_Null()
+        {
+            string testName = null;
+            Assert.Throws<NullReferenceException>(() => testName.CalculateNumberOfLeadingSpaces());
+        }
+
+        [Test]
+        public void Given_Name_LeadingSpaces_Counts_Correct_Number_Of_Spaces()
+        {
+            string testName = "  TestName";
+            Assert.AreEqual(2, testName.CalculateNumberOfLeadingSpaces());
+        }
     }
 }

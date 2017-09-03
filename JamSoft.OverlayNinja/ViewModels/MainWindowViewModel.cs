@@ -25,6 +25,19 @@
             set { _keyName = value; OnPropertyChanged(); }
         }
 
+        private int _keyCount;
+
+        public int KeyCount
+        {
+            get { return _keyCount; }
+            set { _keyCount = value; OnPropertyChanged(); }
+        }
+
+        public string KeyTitle
+        {
+            get { return $"Reading Key (found {KeyCount} keys):"; }
+        }
+
         private ObservableCollection<RegistryKeyEntryViewModel> _keys;
 
         // ReSharper disable once MemberCanBePrivate.Global
@@ -86,7 +99,7 @@
                     }
                     catch (Exception ex) when (ex is UnauthorizedAccessException || ex is SecurityException)
                     {
-                        MessageBox.Show(Application.Current.MainWindow, "Unauthorised access, try running again as administrator", App.MessageBoxCaption, MessageBoxButton.OK, MessageBoxImage.Error);
+                        MessageBox.Show(Application.Current.MainWindow, "Unauthorised access, try running as administrator", App.MessageBoxCaption, MessageBoxButton.OK, MessageBoxImage.Error);
                         break;
                     }
                     catch (IOException ex)
@@ -103,8 +116,6 @@
         {
             try
             {
-                // AnyCPU = HKEY_LOCAL_MACHINE\SOFTWARE\WOW6432Node\Microsoft\Windows\CurrentVersion\Explorer\ShellIconOverlayIdentifiers
-                // x64    = HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\ShellIconOverlayIdentifiers
                 _overlayRegistryKey = Registry.LocalMachine.OpenSubKey("SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Explorer\\ShellIconOverlayIdentifiers", true);
             }
             catch (SecurityException ex)
@@ -119,21 +130,8 @@
 
                 foreach (var subKeyName in _overlayRegistryKey.GetSubKeyNames())
                 {
-                    var chars = subKeyName.ToCharArray();
-                    int leadingSpaces = 0;
-                    foreach (var c in chars)
-                    {
-                        if (c == ' ')
-                        {
-                            leadingSpaces++;
-                        }
-                        else
-                        {
-                            break;
-                        }
-                    }
-
-                    Keys.Add(new RegistryKeyEntryViewModel { Name = subKeyName, NumberOfLeadingSpaces = leadingSpaces, Priorities = _priorities });
+                    Keys.Add(new RegistryKeyEntryViewModel { Name = subKeyName, Priorities = _priorities });
+                    KeyCount++;
                 }
             }
 

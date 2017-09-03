@@ -10,8 +10,15 @@
         public string Name
         {
             get { return _name; }
-            set { _name = value; OnPropertyChanged(); }
+            set
+            {
+                _name = value;
+                OnPropertyChanged();
+                NumberOfLeadingSpaces = value.CalculateNumberOfLeadingSpaces();
+            }
         }
+
+        public string NameUi => _name?.FormatName(SelectedPriority, true);
 
         private int _numberOfLeadingSpaces;
 
@@ -35,7 +42,10 @@
             {
                 _newName = value;
                 OnPropertyChanged();
+                // ReSharper disable ExplicitCallerInfoArgument
                 OnPropertyChanged(nameof(NewNameUi));
+                OnPropertyChanged(nameof(WillRename));
+                // ReSharper restore ExplicitCallerInfoArgument
             }
         }
 
@@ -52,7 +62,6 @@
                 {
                     _selectedPriority = value;
                     OnPropertyChanged();
-                    OnPropertyChanged(nameof(WillRename));
                 }
 
                 SetNewName();
@@ -61,10 +70,20 @@
 
         private void SetNewName()
         {
-            NewName = WillRename ? Name.FormatName(SelectedPriority, false) : null;
+            if (Name == null)
+            {
+                return;
+            }
+
+            NewName = NumberOfLeadingSpaces != SelectedPriority ? Name.FormatName(SelectedPriority, false) : null;
         }
 
-        public bool WillRename => NumberOfLeadingSpaces != SelectedPriority && Name != NewName;
+        public bool WillRename => NumberOfLeadingSpaces != SelectedPriority &&
+            Name != NewName &&
+            !string.IsNullOrEmpty(Name) &&
+            !string.IsNullOrWhiteSpace(Name) &&
+            !string.IsNullOrEmpty(NewName) &&
+            !string.IsNullOrWhiteSpace(NewName);
 
         public ObservableCollection<int> Priorities { get; set; }
     }
